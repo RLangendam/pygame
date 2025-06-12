@@ -1,6 +1,6 @@
-from constants import Constants
-from player import Player
-from utils import clamp
+from source.constants import Constants
+from source.player import Player
+from source.utils import clamp
 
 
 import pygame

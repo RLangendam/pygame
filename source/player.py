@@ -1,5 +1,5 @@
-from level import Level
-from constants import Constants
+from source.level import Level
+from source.constants import Constants
 
 
 import pygame

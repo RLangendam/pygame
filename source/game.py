@@ -1,7 +1,7 @@
-from level import Level
-from player import Player
-from constants import Constants
-from camera import Camera
+from source.level import Level
+from source.player import Player
+from source.constants import Constants
+from source.camera import Camera
 
 
 import pygame
