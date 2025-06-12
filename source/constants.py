@@ -11,9 +11,6 @@ CAMERA_HEIGHT = VERTICAL_TILE_COUNT * TILE_SIZE
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = int(SCREEN_WIDTH / ASPECT_RATIO)
 
-LEVEL_WIDTH = 1000  # Width of the level in pixels
-LEVEL_HEIGHT = 1000  # Height of the level in pixels
-
 
 class Constants:
     def __init__(self):
@@ -21,8 +18,6 @@ class Constants:
         self.tile_size = TILE_SIZE
         self.camera_dimensions = (CAMERA_WIDTH, CAMERA_HEIGHT)
         self.screen_dimensions = (SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.level_width = LEVEL_WIDTH
-        self.level_height = LEVEL_HEIGHT
 
         assert (
             self.screen_dimensions[1] == 720

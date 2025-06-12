@@ -41,5 +41,24 @@ class Player(pygame.sprite.Sprite):
             or self.rect.y + d.y > self.level.height - self.rect.height
         ):
             d.y = 0
-        self.rect.x += int(d.x)
-        self.rect.y += int(d.y)
+
+        dx = int(d.x)
+        dy = int(d.y)
+        new_rect = self.rect.move(dx, dy)
+        for tile_rect in self.level.get_blocked_tile_rects():
+            if new_rect.colliderect(tile_rect):
+                new_rect_x = self.rect.move(dx, 0)
+                new_rect_y = self.rect.move(0, dy)
+                if new_rect_x.colliderect(tile_rect):
+                    dx = 0
+                    if dy == 0:
+                        break
+                if new_rect_y.colliderect(tile_rect):
+                    dy = 0
+                    if dx == 0:
+                        break
+
+        if dx != 0:
+            self.rect.x += dx
+        if dy != 0:
+            self.rect.y += dy

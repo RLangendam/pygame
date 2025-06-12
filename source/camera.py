@@ -1,4 +1,5 @@
 from source.constants import Constants
+from source.level import Level
 from source.player import Player
 from source.utils import clamp
 
@@ -7,23 +8,25 @@ import pygame
 
 
 class Camera:
-    def __init__(self, constants: Constants):
+    def __init__(self, constants: Constants, level: Level, player: Player):
         self.constants = constants
+        self.level = level
+        self.player = player
         self.image = pygame.Surface(
             constants.camera_dimensions
         )  # Create a surface for the camera view
         self.rect = self.image.get_rect()
 
-    def update(self, target: Player):
+    def update(self):
         x = clamp(
-            target.rect.centerx - int(self.rect.width / 2),
+            self.player.rect.centerx - int(self.rect.width / 2),
             0,
-            self.constants.level_width - self.rect.width,
+            self.level.width - self.rect.width,
         )
         y = clamp(
-            target.rect.centery - int(self.rect.height / 2),
+            self.player.rect.centery - int(self.rect.height / 2),
             0,
-            self.constants.level_height - self.rect.height,
+            self.level.height - self.rect.height,
         )
 
         self.rect.topleft = (x, y)
