@@ -63,7 +63,7 @@ class Camera:
         for group in sprite_groups:
             for sprite in group:
                 # Draw each sprite at its position relative to the camera
-                self.image.blit(sprite.image, sprite.rect) # Gebruik de source surface rect als 3e argument
+                self.image.blit(sprite.image, (sprite.rect.x-self.rect.x, sprite.rect.y-self.rect.y)) # Gebruik de source surface rect als 3e argument
         pygame.transform.scale(self.image, (SCREEN_WIDTH, SCREEN_HEIGHT), surface)  # Scale camera view to screen size
 
 def main():
