@@ -18,9 +18,12 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.level_group = pygame.sprite.Group()  # Create a group for level tiles
+        self.object_group = pygame.sprite.Group()  # Create a group for level tiles
+        self.background_group = (
+            pygame.sprite.Group()
+        )  # Create a group for background tiles
         self.level = Level(
-            self.level_group, self.constants
+            self.background_group, self.object_group, self.constants
         )  # Create a level with specified dimensions
 
         self.player = Player(
@@ -48,7 +51,7 @@ class Game:
             self.camera.update()
 
             self.camera.draw(
-                self.screen, self.level_group, self.player_group
+                self.screen, self.background_group, self.object_group, self.player_group
             )  # Draw camera view
             pygame.display.flip()  # Update the display
 

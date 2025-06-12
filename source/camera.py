@@ -1,3 +1,4 @@
+from itertools import chain
 from source.constants import Constants
 from source.level import Level
 from source.player import Player
@@ -31,15 +32,18 @@ class Camera:
 
         self.rect.topleft = (x, y)
 
-    def draw(self, surface: pygame.Surface, *sprite_groups):
+    def draw(self, surface: pygame.Surface, background_group, *sprite_groups):
         self.image.fill((0, 0, 0))  # Clear the camera surface
-        for group in sprite_groups:
-            for sprite in group:
-                # Draw each sprite at its position relative to the camera
-                self.image.blit(
-                    sprite.image,
-                    (sprite.rect.x - self.rect.x, sprite.rect.y - self.rect.y),
-                )
+
+        sprites = (sprite for group in sprite_groups for sprite in group)
+        sprites = sorted(sprites, key=lambda s: s.rect.y)
+
+        for sprite in chain(iter(background_group), sprites):
+            # Draw each sprite at its position relative to the camera
+            self.image.blit(
+                sprite.image,
+                (sprite.rect.x - self.rect.x, sprite.rect.y - self.rect.y),
+            )
         pygame.transform.scale(
             self.image, (surface.get_width(), surface.get_height()), surface
         )  # Scale camera view to screen size
