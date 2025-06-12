@@ -1,3 +1,6 @@
 /.venv
 /assets
 __pycache__
+/tools
+desktop.ini
+*.gdoc
