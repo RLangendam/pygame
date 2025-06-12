@@ -38,7 +38,7 @@ class Game:
         self.player.set_weapon(self.weapon)
 
         self.camera = Camera(
-            self.constants, self.level, self.player
+            self.constants, self.screen, self.level, self.player
         )  # Create a camera for the game
         self.weapon.set_camera(self.camera)  # Set the camera for the weapon
 
@@ -67,7 +67,6 @@ class Game:
             self.camera.update()
 
             self.camera.draw(
-                self.screen,
                 self.background_group,
                 self.object_group,
                 self.player_group,

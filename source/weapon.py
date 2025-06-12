@@ -21,6 +21,9 @@ class Weapon(pygame.sprite.Sprite):
         )  # Get the mouse position
         dx = mouse_x - self.player.rect.centerx
         dy = mouse_y - self.player.rect.centery
+        # Protect against division by zero during normalization
+        if dx == 0 and dy == 0:
+            return
 
         self.image.fill((0, 0, 0))
         # Calculate the mouse position relative to the weapon's center

@@ -9,8 +9,11 @@ import pygame
 
 
 class Camera:
-    def __init__(self, constants: Constants, level: Level, player: Player):
+    def __init__(
+        self, constants: Constants, screen: pygame.Surface, level: Level, player: Player
+    ):
         self.constants = constants
+        self.screen = screen
         self.level = level
         self.player = player
         self.image = pygame.Surface(
@@ -32,7 +35,7 @@ class Camera:
 
         self.rect.topleft = (x, y)
 
-    def draw(self, surface: pygame.Surface, background_group, *sprite_groups):
+    def draw(self, background_group, *sprite_groups):
         self.image.fill((0, 0, 0))  # Clear the camera surface
 
         sprites = (sprite for group in sprite_groups for sprite in group)
@@ -45,10 +48,10 @@ class Camera:
                 (sprite.rect.x - self.rect.x, sprite.rect.y - self.rect.y),
             )
         pygame.transform.scale(
-            self.image, (surface.get_width(), surface.get_height()), surface
+            self.image, (self.screen.get_width(), self.screen.get_height()), self.screen
         )  # Scale camera view to screen size
 
     def from_screen_pos(self, pos: tuple[int, int]) -> tuple[int, int]:
-        x = pos[0] * self.rect.width // self.constants.screen_dimensions[0]
-        y = pos[1] * self.rect.height // self.constants.screen_dimensions[1]
+        x = pos[0] * self.rect.width // self.screen.get_width()
+        y = pos[1] * self.rect.height // self.screen.get_height()
         return x + self.rect.x, y + self.rect.y
