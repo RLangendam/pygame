@@ -1,3 +1,4 @@
+from level import Level
 from player import Player
 from constants import Constants
 from camera import Camera
@@ -17,8 +18,10 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
+        self.level = Level()  # Create a level with specified dimensions
+
         self.player = Player(
-            50, 50, self.constants
+            50, 50, self.constants, self.level
         )  # Create a player at position (50, 50)
         self.player_group = pygame.sprite.GroupSingle(self.player)  # type: ignore
 
@@ -37,7 +40,7 @@ class Game:
 
             # Update player
             self.player_group.update(dt)
-            self.camera.update(self.player, self.constants)
+            self.camera.update(self.player)
 
             self.camera.draw(self.screen, self.player_group)  # Draw camera view
             pygame.display.flip()  # Update the display

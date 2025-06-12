@@ -8,21 +8,22 @@ import pygame
 
 class Camera:
     def __init__(self, constants: Constants):
+        self.constants = constants
         self.image = pygame.Surface(
             constants.camera_dimensions
         )  # Create a surface for the camera view
         self.rect = self.image.get_rect()
 
-    def update(self, target: Player, constants: Constants):
+    def update(self, target: Player):
         x = clamp(
             target.rect.centerx - int(self.rect.width / 2),
             0,
-            constants.level_width - self.rect.width,
+            self.constants.level_width - self.rect.width,
         )
         y = clamp(
             target.rect.centery - int(self.rect.height / 2),
             0,
-            constants.level_height - self.rect.height,
+            self.constants.level_height - self.rect.height,
         )
 
         self.rect.topleft = (x, y)
