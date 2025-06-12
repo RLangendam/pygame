@@ -6,6 +6,8 @@ from source.camera import Camera
 
 import pygame
 
+from source.weapon import Weapon
+
 
 class Game:
     def __init__(self):
@@ -31,27 +33,45 @@ class Game:
         )  # Create a player at position (50, 50)
         self.player_group = pygame.sprite.GroupSingle(self.player)  # type: ignore
 
+        self.weapon_group = pygame.sprite.GroupSingle()
+        self.weapon = Weapon(self.weapon_group, self.constants, self.player)
+        self.player.set_weapon(self.weapon)
+
         self.camera = Camera(
             self.constants, self.level, self.player
         )  # Create a camera for the game
+        self.weapon.set_camera(self.camera)  # Set the camera for the weapon
 
     def run(self):
         running = True
+
+        maximum_frame_time = 1 + int(
+            1 / self.constants.fps * 1000
+        )  # Maximum frame time in milliseconds
         while running:
             dt = self.clock.tick(
                 self.constants.fps
             )  # Get the time since the last frame in milliseconds
 
+            if dt > maximum_frame_time:
+                print(
+                    f"Warning: Frame time {dt}ms exceeds target frame time {maximum_frame_time}ms."
+                )
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
-            # Update player
+            self.object_group.update(dt)
             self.player_group.update(dt)
             self.camera.update()
 
             self.camera.draw(
-                self.screen, self.background_group, self.object_group, self.player_group
+                self.screen,
+                self.background_group,
+                self.object_group,
+                self.player_group,
+                self.weapon_group,
             )  # Draw camera view
             pygame.display.flip()  # Update the display
 

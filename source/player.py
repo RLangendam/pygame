@@ -62,3 +62,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.x += dx
         if dy != 0:
             self.rect.y += dy
+
+        self.weapon.update(dt)
+
+    def set_weapon(self, weapon):
+        self.weapon = weapon

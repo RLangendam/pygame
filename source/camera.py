@@ -47,3 +47,8 @@ class Camera:
         pygame.transform.scale(
             self.image, (surface.get_width(), surface.get_height()), surface
         )  # Scale camera view to screen size
+
+    def from_screen_pos(self, pos: tuple[int, int]) -> tuple[int, int]:
+        x = pos[0] * self.rect.width // self.constants.screen_dimensions[0]
+        y = pos[1] * self.rect.height // self.constants.screen_dimensions[1]
+        return x + self.rect.x, y + self.rect.y
