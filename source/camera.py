@@ -35,11 +35,11 @@ class Camera:
 
         self.rect.topleft = (x, y)
 
-    def draw(self, background_group, *sprite_groups):
+    def draw(self, background_group, *y_sorted_sprite_groups):
         self.image.fill((0, 0, 0, 0))  # Clear the camera surface
 
-        sprites = (sprite for group in sprite_groups for sprite in group)
-        sprites = sorted(sprites, key=lambda s: s.rect.y)
+        sprites = (sprite for group in y_sorted_sprite_groups for sprite in group)
+        sprites = sorted(sprites, key=lambda s: s.rect.bottom)
 
         for sprite in chain(iter(background_group), sprites):
             # Draw each sprite at its position relative to the camera
