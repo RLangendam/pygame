@@ -14,7 +14,7 @@ class Game:
         pygame.init()
         self.constants = Constants()  # Initialize constants
         self.screen = pygame.display.set_mode(
-            self.constants.screen_dimensions
+            self.constants.screen_dimensions, pygame.SRCALPHA
         )  # Set the screen size
         pygame.display.set_caption("KeiTV game")
 

@@ -9,9 +9,9 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, constants: Constants, level: Level):
         super().__init__()
         self.image = pygame.Surface(
-            (constants.tile_size, constants.tile_size)
+            (constants.tile_size, constants.tile_size), pygame.SRCALPHA
         )  # Create a square surface
-        pygame.draw.ellipse(self.image, (255, 0, 0), self.image.get_rect())
+        pygame.draw.ellipse(self.image, (255, 0, 0, 255), self.image.get_rect())
         self.rect = self.image.get_rect(topleft=(x, y))
         self.level = level  # Store the level reference
 

@@ -8,7 +8,9 @@ from source.player import Player
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, group, constants: Constants, player: Player):
         super().__init__(group)
-        self.image = pygame.Surface((constants.tile_size, constants.tile_size))
+        self.image = pygame.Surface(
+            (constants.tile_size, constants.tile_size), pygame.SRCALPHA
+        )
         self.weapon_length = constants.tile_size
         self.weapon_width = int(constants.tile_size / 4)
         self.weapon_radius = int(constants.tile_size / 2)
@@ -25,7 +27,7 @@ class Weapon(pygame.sprite.Sprite):
         if dx == 0 and dy == 0:
             return
 
-        self.image.fill((0, 0, 0))
+        self.image.fill((0, 0, 0, 0))  # Clear the weapon image
         # Calculate the mouse position relative to the weapon's center
         weapon_center = pygame.math.Vector2(
             self.image.get_width() // 2, self.image.get_height() // 2
@@ -33,7 +35,7 @@ class Weapon(pygame.sprite.Sprite):
         mouse_pos_on_image = weapon_center + pygame.math.Vector2(dx, dy)
         pygame.draw.line(
             self.image,
-            (255, 0, 0),
+            (255, 0, 0, 255),
             weapon_center,
             mouse_pos_on_image,
             self.weapon_width,

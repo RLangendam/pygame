@@ -17,7 +17,7 @@ class Camera:
         self.level = level
         self.player = player
         self.image = pygame.Surface(
-            constants.camera_dimensions
+            constants.camera_dimensions, pygame.SRCALPHA
         )  # Create a surface for the camera view
         self.rect = self.image.get_rect()
 
@@ -36,7 +36,7 @@ class Camera:
         self.rect.topleft = (x, y)
 
     def draw(self, background_group, *sprite_groups):
-        self.image.fill((0, 0, 0))  # Clear the camera surface
+        self.image.fill((0, 0, 0, 0))  # Clear the camera surface
 
         sprites = (sprite for group in sprite_groups for sprite in group)
         sprites = sorted(sprites, key=lambda s: s.rect.y)

@@ -9,23 +9,23 @@ class Tile(pygame.sprite.Sprite):
     ):
         if char == "x":
             super().__init__(background_group)
-            self.image = pygame.Surface((size, size))
-            self.image.fill((255, 255, 255))
+            self.image = pygame.Surface((size, size), pygame.SRCALPHA)
+            self.image.fill((255, 255, 255, 255))
             self.block = True
         elif char == " ":
             super().__init__(background_group)
-            self.image = pygame.Surface((size, size))
-            self.image.fill((100, 100, 100))
+            self.image = pygame.Surface((size, size), pygame.SRCALPHA)
+            self.image.fill((100, 100, 100, 255))
             self.block = False
         elif char == "o":
             super().__init__(object_group)
-            self.image = pygame.Surface((size, size))
-            self.image.fill((0, 255, 0))
+            self.image = pygame.Surface((size, size), pygame.SRCALPHA)
+            self.image.fill((0, 255, 0, 255))
             self.block = False
         elif char == "b":
             super().__init__(object_group)
-            self.image = pygame.Surface((size, size))
-            self.image.fill((0, 0, 255))
+            self.image = pygame.Surface((size, size), pygame.SRCALPHA)
+            self.image.fill((0, 0, 255, 255))
             self.block = True
         else:
             raise ValueError(f"Unknown tile character: {char}")
