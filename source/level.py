@@ -9,6 +9,9 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.Surface(tile_dimensions, pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=pos * constants.tile_size)
 
+    def hit(self):
+        pass
+
 
 class Wall(Tile):
     def __init__(self, pos: pygame.Vector2, constants: Constants, *groups):
@@ -79,14 +82,16 @@ class Level:
     def __init__(self, background_group, object_group, constants: Constants):
         characters = [list(row) for row in MAP.splitlines()]
         self.tiles = []
-        self.blockers_group = pygame.sprite.Group()
+        self.obstacles_group = pygame.sprite.Group()
         self.item_group = pygame.sprite.Group()
         for y, row in enumerate(characters):
             for x, char in enumerate(row):
                 pos = pygame.Vector2(x, y)
                 sprites = []
                 if char == "x":
-                    sprite = Wall(pos, constants, background_group, self.blockers_group)
+                    sprite = Wall(
+                        pos, constants, background_group, self.obstacles_group
+                    )
                     sprites.append(sprite)
                 elif char == " ":
                     sprite = Floor(pos, constants, background_group)
@@ -97,7 +102,9 @@ class Level:
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
                 elif char == "b":
-                    sprite = Obstacle(pos, constants, object_group, self.blockers_group)
+                    sprite = Obstacle(
+                        pos, constants, object_group, self.obstacles_group
+                    )
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
@@ -118,8 +125,8 @@ class Level:
         self.background_group = background_group
         self.object_group = object_group
 
-    def get_blockers(self):
-        return self.blockers_group
+    def get_obstacles(self):
+        return self.obstacles_group
 
     def get_items(self):
         return self.item_group

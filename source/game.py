@@ -25,7 +25,7 @@ class Game:
         self.player = Player(50, 50, self.constants, self.level)
         self.player_group = pygame.sprite.GroupSingle(self.player)  # type: ignore
 
-        self.weapon_group = pygame.sprite.GroupSingle()
+        self.weapon_group = pygame.sprite.Group()
         self.weapon = Weapon(self.weapon_group, self.constants, self.player)
 
         self.camera = Camera(self.constants, self.screen, self.level, self.player)
@@ -49,6 +49,10 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.weapon.start_firing_projectiles()
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.weapon.stop_firing_projectiles()
 
             self.object_group.update(dt)
             self.player_group.update(dt)

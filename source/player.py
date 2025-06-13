@@ -36,9 +36,12 @@ class Player(pygame.sprite.Sprite):
 
         self.pickup_items()
 
+    def get_obstacles(self):
+        return self.level.get_obstacles()
+
     def move_avoiding_collisions(self, dx, dy):
         self.rect.move_ip(dx, dy)
-        blockers = pygame.sprite.spritecollide(self, self.level.get_blockers(), False)  # type: ignore
+        blockers = pygame.sprite.spritecollide(self, self.get_obstacles(), False)  # type: ignore
         if len(blockers) == 0:
             return dx, dy
         if dx == 0:
