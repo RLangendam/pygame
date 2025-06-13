@@ -4,6 +4,10 @@ from source.constants import Constants
 
 import pygame
 
+NONE = 0
+X = 1
+Y = 2
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, constants: Constants, level: Level):
@@ -16,54 +20,83 @@ class Player(pygame.sprite.Sprite):
         self.level = level  # Store the level reference
 
     def update(self, dt: int):
-        # Update player logic here
-        keys = pygame.key.get_pressed()  # Check for key presses
-        distance = int(200 * dt / 1000)  # Calculate distance to move based on dt
-        d = pygame.Vector2(0, 0)
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            d.x -= distance
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            d.x += distance
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            d.y -= distance
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            d.y += distance
-        if d.length() > 0:
-            d = d.normalize() * distance
+        x, y = self.get_movement_direction()
 
-        if (
-            self.rect.x + d.x < 0
-            or self.rect.x + d.x > self.level.width - self.rect.width
-        ):
-            d.x = 0
-        if (
-            self.rect.y + d.y < 0
-            or self.rect.y + d.y > self.level.height - self.rect.height
-        ):
-            d.y = 0
+        dx, dy = self.deltas_from_direction(x, y, dt)
+        if dx == 0 and dy == 0:
+            return
 
-        dx = int(d.x)
-        dy = int(d.y)
-        new_rect = self.rect.move(dx, dy)
-        for tile_rect in self.level.get_blocked_tile_rects():
-            if new_rect.colliderect(tile_rect):
-                new_rect_x = self.rect.move(dx, 0)
-                new_rect_y = self.rect.move(0, dy)
-                if new_rect_x.colliderect(tile_rect):
-                    dx = 0
-                    if dy == 0:
-                        break
-                if new_rect_y.colliderect(tile_rect):
-                    dy = 0
-                    if dx == 0:
-                        break
+        dx, dy = self.restrict_to_level_bounds(dx, dy)
+        if dx == 0 and dy == 0:
+            return
 
+        self.move_avoiding_collisions(dx, dy)
+
+    def move_avoiding_collisions(self, dx, dy):
+        self.rect.move_ip(dx, dy)
+        blockers = pygame.sprite.spritecollide(self, self.level.get_blockers(), False)  # type: ignore
+        if len(blockers) == 0:
+            return
+        if dx == 0:
+            self.rect.move_ip(0, -dy)
+            return
+        if dy == 0:
+            self.rect.move_ip(-dx, 0)
+            return
+
+        reverted = NONE
+        for blocker in blockers:
+            if pygame.sprite.collide_mask(self, blocker) is None:
+                continue
+
+            if reverted & X == 0:
+                self.rect.move_ip(-dx, 0)
+                reverted |= X
+                if pygame.sprite.collide_mask(self, blocker) is None:
+                    continue
+
+            if reverted & Y == 0:
+                self.rect.move_ip(0, -dy)
+                reverted |= Y
+                if pygame.sprite.collide_mask(self, blocker) is None:
+                    continue
+
+            assert reverted == X | Y, "Reverted should be both X and Y"
+            break
+
+    def restrict_to_level_bounds(self, dx, dy):
         if dx != 0:
-            self.rect.x += dx
+            new_x = self.rect.x + dx
+            if new_x < 0 or new_x > self.level.width - self.rect.width:
+                dx = 0
         if dy != 0:
-            self.rect.y += dy
+            new_y = self.rect.y + dy
+            if new_y < 0 or new_y > self.level.height - self.rect.height:
+                dy = 0
+        return dx, dy
 
-        self.weapon.update(dt)
+    def get_movement_direction(self):
+        keys = pygame.key.get_pressed()
+        x, y = 0, 0
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            x -= 1
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            x += 1
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            y -= 1
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            y += 1
+        return x, y
 
-    def set_weapon(self, weapon):
-        self.weapon = weapon
+    def deltas_from_direction(self, x: int, y: int, dt: int) -> tuple[int, int]:
+        if x != 0 and y != 0:
+            # Diagonal movement: 0.141 = sqrt(2) * 200 / 1000
+            distance = int(0.141 * dt)
+        elif x == 0 and y == 0:
+            return 0, 0  # No movement
+        else:
+            distance = int(0.2 * dt)  # Calculate distance to move based on dt
+
+        dx = x * distance
+        dy = y * distance
+        return dx, dy

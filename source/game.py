@@ -35,7 +35,6 @@ class Game:
 
         self.weapon_group = pygame.sprite.GroupSingle()
         self.weapon = Weapon(self.weapon_group, self.constants, self.player)
-        self.player.set_weapon(self.weapon)
 
         self.camera = Camera(
             self.constants, self.screen, self.level, self.player
@@ -64,6 +63,7 @@ class Game:
 
             self.object_group.update(dt)
             self.player_group.update(dt)
+            self.weapon_group.update(dt)
             self.camera.update()
 
             self.camera.draw(
