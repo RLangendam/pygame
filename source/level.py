@@ -1,4 +1,3 @@
-from itertools import chain
 import pygame
 from source.constants import Constants
 
@@ -6,9 +5,8 @@ from source.constants import Constants
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos: pygame.Vector2, constants: Constants, *groups):
         super().__init__(*groups)
-        self.image = pygame.Surface(
-            (constants.tile_size, constants.tile_size), pygame.SRCALPHA
-        )
+        tile_dimensions = (constants.tile_size, constants.tile_size)
+        self.image = pygame.Surface(tile_dimensions, pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=pos * constants.tile_size)
 
 

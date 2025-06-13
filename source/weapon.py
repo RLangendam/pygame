@@ -1,5 +1,4 @@
 import pygame
-
 from source.camera import Camera
 from source.constants import Constants
 from source.player import Player
@@ -8,9 +7,8 @@ from source.player import Player
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, group, constants: Constants, player: Player):
         super().__init__(group)
-        self.image = pygame.Surface(
-            (constants.tile_size, constants.tile_size), pygame.SRCALPHA
-        )
+        image_dimensions = (constants.tile_size, constants.tile_size)
+        self.image = pygame.Surface(image_dimensions, pygame.SRCALPHA)
         self.weapon_length = constants.tile_size
         self.weapon_width = int(constants.tile_size / 4)
         self.weapon_radius = int(constants.tile_size / 2)
@@ -18,9 +16,7 @@ class Weapon(pygame.sprite.Sprite):
         self.player = player
 
     def update(self, dt: int):
-        mouse_x, mouse_y = self.camera.from_screen_pos(
-            pygame.mouse.get_pos()
-        )  # Get the mouse position
+        mouse_x, mouse_y = self.camera.get_mouse_pos()  # Get the mouse position
         dx = mouse_x - self.player.rect.centerx
         dy = mouse_y - self.player.rect.centery
         # Protect against division by zero during normalization
@@ -30,8 +26,9 @@ class Weapon(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0, 0))  # Clear the weapon image
         # Calculate the mouse position relative to the weapon's center
         weapon_center = pygame.math.Vector2(
-            self.image.get_width() // 2, self.image.get_height() // 2
+            self.image.get_width(), self.image.get_height()
         )
+        weapon_center = weapon_center / 2
         mouse_pos_on_image = weapon_center + pygame.math.Vector2(dx, dy)
         pygame.draw.line(
             self.image,

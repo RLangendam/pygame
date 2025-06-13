@@ -1,8 +1,7 @@
+import pygame
 from source.level import Level
 from source.constants import Constants
 
-
-import pygame
 
 NONE = 0
 X = 1
@@ -12,9 +11,8 @@ Y = 2
 class Player(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, constants: Constants, level: Level):
         super().__init__()
-        self.image = pygame.Surface(
-            (constants.tile_size, constants.tile_size), pygame.SRCALPHA
-        )  # Create a square surface
+        image_dimensions = (constants.tile_size, constants.tile_size)
+        self.image = pygame.Surface(image_dimensions, pygame.SRCALPHA)
         pygame.draw.ellipse(self.image, (255, 0, 0, 255), self.image.get_rect())
         self.rect = self.image.get_rect(topleft=(x, y))
         self.level = level  # Store the level reference
