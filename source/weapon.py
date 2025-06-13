@@ -14,6 +14,7 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_radius = int(constants.tile_size / 2)
         self.rect = self.image.get_rect()
         self.player = player
+        self.ammo = 10
 
     def update(self, dt: int):
         mouse_x, mouse_y = self.camera.get_mouse_pos()  # Get the mouse position

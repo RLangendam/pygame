@@ -44,9 +44,28 @@ class Obstacle(Tile):
         )
 
 
+class Item(Tile):
+    def __init__(self, pos: pygame.Vector2, constants: Constants, *groups):
+        super().__init__(pos, constants, *groups)
+        pygame.draw.rect(
+            self.image,
+            (255, 255, 0, 255),
+            (
+                constants.tile_size // 4,
+                constants.tile_size // 4,
+                constants.tile_size // 2,
+                constants.tile_size // 2,
+            ),
+        )
+
+    def pickup(self, inventory: dict):
+        inventory["Item"] += 1
+        self.kill()
+
+
 MAP = """xxxxxxxxxxxxxxxxxxxxxx
 x                    x
-x                    x
+x         i          x
 x       xxxxx        x
 x                    x
 x                    x
@@ -61,6 +80,7 @@ class Level:
         characters = [list(row) for row in MAP.splitlines()]
         self.tiles = []
         self.blockers_group = pygame.sprite.Group()
+        self.item_group = pygame.sprite.Group()
         for y, row in enumerate(characters):
             for x, char in enumerate(row):
                 pos = pygame.Vector2(x, y)
@@ -81,6 +101,11 @@ class Level:
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
+                elif char == "i":
+                    sprite = Item(pos, constants, object_group, self.item_group)
+                    sprites.append(sprite)
+                    sprite = Floor(pos, constants, background_group)
+                    sprites.append(sprite)
                 else:
                     raise ValueError(f"Unknown tile character: {char}")
 
@@ -95,3 +120,6 @@ class Level:
 
     def get_blockers(self):
         return self.blockers_group
+
+    def get_items(self):
+        return self.item_group

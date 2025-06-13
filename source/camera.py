@@ -26,7 +26,7 @@ class Camera:
         y = clamp(y, 0, delta_height)
         self.rect.topleft = (x, y)
 
-    def draw(self, background_group, *y_sorted_sprite_groups):
+    def draw(self, background_group, hud_group, *y_sorted_sprite_groups):
         self.image.fill((0, 0, 0, 0))  # Clear the camera surface
 
         sprites = (sprite for group in y_sorted_sprite_groups for sprite in group)
@@ -37,6 +37,10 @@ class Camera:
             dx = sprite.rect.x - self.rect.x
             dy = sprite.rect.y - self.rect.y
             self.image.blit(sprite.image, (dx, dy))
+
+        for sprite in hud_group:
+            self.image.blit(sprite.image, sprite.rect.topleft)
+
         screen_dimensions = (self.screen.get_width(), self.screen.get_height())
         pygame.transform.scale(self.image, screen_dimensions, self.screen)
 

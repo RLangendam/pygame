@@ -16,6 +16,8 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.ellipse(self.image, (255, 0, 0, 255), self.image.get_rect())
         self.rect = self.image.get_rect(topleft=(x, y))
         self.level = level  # Store the level reference
+        self.health = 100
+        self.inventory = {"Item": 0}
 
     def update(self, dt: int):
         x, y = self.get_movement_direction()
@@ -28,19 +30,23 @@ class Player(pygame.sprite.Sprite):
         if dx == 0 and dy == 0:
             return
 
-        self.move_avoiding_collisions(dx, dy)
+        dx, dy = self.move_avoiding_collisions(dx, dy)
+        if dx == 0 and dy == 0:
+            return
+
+        self.pickup_items()
 
     def move_avoiding_collisions(self, dx, dy):
         self.rect.move_ip(dx, dy)
         blockers = pygame.sprite.spritecollide(self, self.level.get_blockers(), False)  # type: ignore
         if len(blockers) == 0:
-            return
+            return dx, dy
         if dx == 0:
             self.rect.move_ip(0, -dy)
-            return
+            return 0, 0
         if dy == 0:
             self.rect.move_ip(-dx, 0)
-            return
+            return 0, 0
 
         reverted = NONE
         for blocker in blockers:
@@ -49,18 +55,22 @@ class Player(pygame.sprite.Sprite):
 
             if reverted & X == 0:
                 self.rect.move_ip(-dx, 0)
+                dx = 0
                 reverted |= X
                 if pygame.sprite.collide_mask(self, blocker) is None:
                     continue
 
             if reverted & Y == 0:
                 self.rect.move_ip(0, -dy)
+                dy = 0
                 reverted |= Y
                 if pygame.sprite.collide_mask(self, blocker) is None:
                     continue
 
             assert reverted == X | Y, "Reverted should be both X and Y"
             break
+
+        return dx, dy
 
     def restrict_to_level_bounds(self, dx, dy):
         if dx != 0:
@@ -98,3 +108,8 @@ class Player(pygame.sprite.Sprite):
         dx = x * distance
         dy = y * distance
         return dx, dy
+
+    def pickup_items(self):
+        items = pygame.sprite.spritecollide(self, self.level.get_items(), False)  # type: ignore
+        for item in items:
+            item.pickup(self.inventory)

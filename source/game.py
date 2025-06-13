@@ -1,4 +1,5 @@
 import pygame
+from source.hud import HUD
 from source.level import Level
 from source.player import Player
 from source.constants import Constants
@@ -30,6 +31,9 @@ class Game:
         self.camera = Camera(self.constants, self.screen, self.level, self.player)
         self.weapon.set_camera(self.camera)  # Set the camera for the weapon
 
+        self.hud = HUD(self.constants, self.player, self.weapon)
+        self.hud_group = pygame.sprite.GroupSingle(self.hud)  # type: ignore
+
     def run(self):
         running = True
 
@@ -49,10 +53,12 @@ class Game:
             self.object_group.update(dt)
             self.player_group.update(dt)
             self.weapon_group.update(dt)
+            self.hud_group.update()
             self.camera.update()
 
             self.camera.draw(
                 self.background_group,
+                self.hud_group,
                 self.object_group,
                 self.player_group,
                 self.weapon_group,
