@@ -9,9 +9,8 @@ class Player(Movable):
         image_dimensions = (constants.tile_size, constants.tile_size)
         image = pygame.Surface(image_dimensions, pygame.SRCALPHA)
         rect = image.get_rect(topleft=(x, y))
-        super().__init__(image, rect, *groups)
+        super().__init__(image, rect, 100, *groups)
         pygame.draw.ellipse(self.image, (255, 0, 0, 255), self.image.get_rect())
-        self.health = 100
         self.inventory = {"Item": 0}
         self.movement_x = 0
         self.movement_y = 0
@@ -72,3 +71,6 @@ class Player(Movable):
         items = pygame.sprite.spritecollide(self, items, False)  # type: ignore
         for item in items:
             item.pickup(self.inventory)
+
+    def death(self):
+        print("Game over")

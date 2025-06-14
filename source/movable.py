@@ -6,10 +6,13 @@ Y = 2
 
 
 class Movable(pygame.sprite.Sprite):
-    def __init__(self, surface: pygame.Surface, rect: pygame.Rect, *groups):
+    def __init__(
+        self, surface: pygame.Surface, rect: pygame.Rect, health: int, *groups
+    ):
         super().__init__(*groups)  # type: ignore
         self.image = surface
         self.rect = rect
+        self.health = health
 
     def move_avoiding_collisions(self, dx, dy, obstacles):
         self.rect.move_ip(dx, dy)
@@ -58,3 +61,11 @@ class Movable(pygame.sprite.Sprite):
             if new_y < 0 or new_y > height - self.rect.height:
                 dy = 0
         return dx, dy
+
+    def hit(self, damage: int):
+        self.health -= damage
+        if self.health <= 0:
+            self.death()
+
+    def death(self):
+        pass

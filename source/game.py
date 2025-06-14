@@ -96,7 +96,7 @@ class Game:
             player_center = self.player.rect.center
             self.level.get_enemies().update(
                 dt,
-                player_center,
+                self.player,
                 self.level.width,
                 self.level.height,
                 self.level.get_obstacles(),
