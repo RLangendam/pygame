@@ -29,29 +29,25 @@ class Player(Movable):
 
         self.pickup_items(items)
 
-    def start_moving_up(self):
-        self.movement_y -= 1
-
-    def start_moving_down(self):
-        self.movement_y += 1
-
-    def start_moving_left(self):
-        self.movement_x -= 1
-
-    def start_moving_right(self):
-        self.movement_x += 1
-
-    def stop_moving_up(self):
-        self.movement_y += 1
-
-    def stop_moving_down(self):
-        self.movement_y -= 1
-
-    def stop_moving_left(self):
-        self.movement_x += 1
-
-    def stop_moving_right(self):
-        self.movement_x -= 1
+    def handle(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                self.movement_y -= 1
+            elif event.key == pygame.K_s:
+                self.movement_y += 1
+            elif event.key == pygame.K_a:
+                self.movement_x -= 1
+            elif event.key == pygame.K_d:
+                self.movement_x += 1
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_w:
+                self.movement_y += 1
+            elif event.key == pygame.K_s:
+                self.movement_y -= 1
+            elif event.key == pygame.K_a:
+                self.movement_x += 1
+            elif event.key == pygame.K_d:
+                self.movement_x -= 1
 
     def deltas_from_direction(self, dt: int) -> tuple[int, int]:
         if self.movement_x != 0 and self.movement_y != 0:

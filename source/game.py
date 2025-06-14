@@ -43,35 +43,16 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (
+                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+            ):
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.weapon.start_firing_projectiles()
-            elif event.type == pygame.MOUSEBUTTONUP:
-                self.weapon.stop_firing_projectiles()
             elif event.type == pygame.MOUSEMOTION:
                 new_mouse_pos = self.camera.from_screen_pos(event.pos)
                 self.weapon.update_mouse_position(new_mouse_pos)
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
-                elif event.key == pygame.K_w:
-                    self.player.start_moving_up()
-                elif event.key == pygame.K_s:
-                    self.player.start_moving_down()
-                elif event.key == pygame.K_a:
-                    self.player.start_moving_left()
-                elif event.key == pygame.K_d:
-                    self.player.start_moving_right()
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_w:
-                    self.player.stop_moving_up()
-                elif event.key == pygame.K_s:
-                    self.player.stop_moving_down()
-                elif event.key == pygame.K_a:
-                    self.player.stop_moving_left()
-                elif event.key == pygame.K_d:
-                    self.player.stop_moving_right()
+            else:
+                self.player.handle(event)
+                self.weapon.handle(event)
 
     def run(self):
         self.running = True

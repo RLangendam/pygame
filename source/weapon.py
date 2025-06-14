@@ -53,12 +53,11 @@ class Weapon(pygame.sprite.Sprite):
 
         self.update_firing_projectiles(direction, dt, *groups)
 
-    def start_firing_projectiles(self):
-        self.firing_projectiles = True
-
-    def stop_firing_projectiles(self):
-        # Logic to stop firing projectiles
-        self.firing_projectiles = False
+    def handle(self, event: pygame.event.Event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.firing_projectiles = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.firing_projectiles = False
 
     def update_firing_projectiles(
         self, direction: pygame.math.Vector2, dt: int, *groups
