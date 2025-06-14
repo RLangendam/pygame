@@ -66,16 +66,16 @@ class Item(Tile):
         self.kill()
 
 
-MAP = """xxxxxxxxxxxxxxxxxxxxxx
+MAP = """xxxxxxxx  xxxxxxxxxxxx
 x                    x
 x         i          x
 x       xxxxx        x
-x                    x
-x                    x
+                      
+                      
 x    o  b  xxxxx     x
 x                    x
 x                    x
-xxxxxxxxxxxxxxxxxxxxxx"""
+xxxxxxxxxxx  xxxxxxxxx"""
 
 
 class Level:
