@@ -94,6 +94,13 @@ class Game:
             self.dynamics_group.update(dt)
             self.player_group.update(dt, self.level)
             player_center = self.player.rect.center
+            self.level.get_enemies().update(
+                dt,
+                player_center,
+                self.level.width,
+                self.level.height,
+                self.level.get_obstacles(),
+            )
             self.weapon_group.update(
                 dt, player_center, self.projectile_group, self.y_sorted_group
             )

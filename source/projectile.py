@@ -23,5 +23,5 @@ class Projectile(pygame.sprite.Sprite):
         colliders = pygame.sprite.spritecollide(self, obstacles, False)  # type: ignore
         for obstacle in colliders:
             if pygame.sprite.collide_mask(self, obstacle) is not None:
-                obstacle.hit()
+                obstacle.hit(1)
                 self.kill()
