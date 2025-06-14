@@ -44,8 +44,7 @@ class Camera:
         screen_dimensions = (self.screen.get_width(), self.screen.get_height())
         pygame.transform.scale(self.image, screen_dimensions, self.screen)
 
-    def get_mouse_pos(self) -> tuple[int, int]:
-        pos = pygame.mouse.get_pos()
+    def from_screen_pos(self, pos: tuple[int, int]) -> tuple[int, int]:
         x = pos[0] * self.rect.width // self.screen.get_width()
         y = pos[1] * self.rect.height // self.screen.get_height()
         return x + self.rect.x, y + self.rect.y

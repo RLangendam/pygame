@@ -19,9 +19,13 @@ class Weapon(pygame.sprite.Sprite):
         self.ammo = 10
         self.firing_projectiles = False
         self.last_fired = 0
+        self.mouse_pos = (0, 0)
+
+    def update_mouse_position(self, mouse_pos: tuple[int, int]):
+        self.mouse_pos = mouse_pos
 
     def update(self, dt: int):
-        mouse_x, mouse_y = self.camera.get_mouse_pos()
+        mouse_x, mouse_y = self.mouse_pos
         dx = mouse_x - self.player.rect.centerx
         dy = mouse_y - self.player.rect.centery
         # Protect against division by zero during normalization
@@ -51,9 +55,6 @@ class Weapon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(center_x, center_y))
 
         self.update_firing_projectiles(direction, dt)
-
-    def set_camera(self, camera: Camera):
-        self.camera = camera
 
     def start_firing_projectiles(self):
         self.firing_projectiles = True

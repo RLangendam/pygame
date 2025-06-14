@@ -29,16 +29,47 @@ class Game:
         self.weapon = Weapon(self.weapon_group, self.constants, self.player)
 
         self.camera = Camera(self.constants, self.screen, self.level, self.player)
-        self.weapon.set_camera(self.camera)  # Set the camera for the weapon
 
         self.hud = HUD(self.constants, self.player, self.weapon)
         self.hud_group = pygame.sprite.GroupSingle(self.hud)  # type: ignore
 
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.weapon.start_firing_projectiles()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.weapon.stop_firing_projectiles()
+            elif event.type == pygame.MOUSEMOTION:
+                new_mouse_pos = self.camera.from_screen_pos(event.pos)
+                self.weapon.update_mouse_position(new_mouse_pos)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                elif event.key == pygame.K_w:
+                    self.player.start_moving_up()
+                elif event.key == pygame.K_s:
+                    self.player.start_moving_down()
+                elif event.key == pygame.K_a:
+                    self.player.start_moving_left()
+                elif event.key == pygame.K_d:
+                    self.player.start_moving_right()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_w:
+                    self.player.stop_moving_up()
+                elif event.key == pygame.K_s:
+                    self.player.stop_moving_down()
+                elif event.key == pygame.K_a:
+                    self.player.stop_moving_left()
+                elif event.key == pygame.K_d:
+                    self.player.stop_moving_right()
+
     def run(self):
-        running = True
+        self.running = True
 
         maximum_frame_time = 1 + int(1 / self.constants.fps * 1000)
-        while running:
+        while self.running:
             dt = self.clock.tick(self.constants.fps)
 
             if dt > maximum_frame_time:
@@ -46,13 +77,7 @@ class Game:
                     f"Warning: Frame time {dt}ms exceeds target frame time {maximum_frame_time}ms."
                 )
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.weapon.start_firing_projectiles()
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    self.weapon.stop_firing_projectiles()
+            self.handle_events()
 
             self.object_group.update(dt)
             self.player_group.update(dt)

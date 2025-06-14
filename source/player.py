@@ -18,11 +18,11 @@ class Player(pygame.sprite.Sprite):
         self.level = level  # Store the level reference
         self.health = 100
         self.inventory = {"Item": 0}
+        self.movement_x = 0
+        self.movement_y = 0
 
     def update(self, dt: int):
-        x, y = self.get_movement_direction()
-
-        dx, dy = self.deltas_from_direction(x, y, dt)
+        dx, dy = self.deltas_from_direction(dt)
         if dx == 0 and dy == 0:
             return
 
@@ -35,6 +35,30 @@ class Player(pygame.sprite.Sprite):
             return
 
         self.pickup_items()
+
+    def start_moving_up(self):
+        self.movement_y -= 1
+
+    def start_moving_down(self):
+        self.movement_y += 1
+
+    def start_moving_left(self):
+        self.movement_x -= 1
+
+    def start_moving_right(self):
+        self.movement_x += 1
+
+    def stop_moving_up(self):
+        self.movement_y += 1
+
+    def stop_moving_down(self):
+        self.movement_y -= 1
+
+    def stop_moving_left(self):
+        self.movement_x += 1
+
+    def stop_moving_right(self):
+        self.movement_x -= 1
 
     def get_obstacles(self):
         return self.level.get_obstacles()
@@ -86,30 +110,17 @@ class Player(pygame.sprite.Sprite):
                 dy = 0
         return dx, dy
 
-    def get_movement_direction(self):
-        keys = pygame.key.get_pressed()
-        x, y = 0, 0
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            x -= 1
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            x += 1
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            y -= 1
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            y += 1
-        return x, y
-
-    def deltas_from_direction(self, x: int, y: int, dt: int) -> tuple[int, int]:
-        if x != 0 and y != 0:
+    def deltas_from_direction(self, dt: int) -> tuple[int, int]:
+        if self.movement_x != 0 and self.movement_y != 0:
             # Diagonal movement: 0.141 = sqrt(2) * 200 / 1000
             distance = int(0.141 * dt)
-        elif x == 0 and y == 0:
+        elif self.movement_x == 0 and self.movement_y == 0:
             return 0, 0  # No movement
         else:
             distance = int(0.2 * dt)  # Calculate distance to move based on dt
 
-        dx = x * distance
-        dy = y * distance
+        dx = self.movement_x * distance
+        dy = self.movement_y * distance
         return dx, dy
 
     def pickup_items(self):
