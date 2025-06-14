@@ -18,18 +18,29 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.object_group = pygame.sprite.Group()  # Create a group for level tiles
+        self.y_sorted_group = pygame.sprite.Group()
+        self.statics_group = pygame.sprite.Group()
+        self.dynamics_group = pygame.sprite.Group()
         self.background_group = pygame.sprite.Group()
-        self.level = Level(self.background_group, self.object_group, self.constants)
+        self.level = Level(
+            self.background_group,
+            self.dynamics_group,
+            self.statics_group,
+            self.y_sorted_group,
+            self.constants,
+        )
 
-        self.player = Player(50, 50, self.constants)
-        self.player_group = pygame.sprite.GroupSingle(self.player)  # type: ignore
+        self.player_group = pygame.sprite.GroupSingle()
+        self.player = Player(
+            50, 50, self.constants, self.player_group, self.y_sorted_group
+        )
 
-        self.weapon_group = pygame.sprite.Group()
-        self.weapon = Weapon(self.weapon_group, self.constants)
+        self.weapon_group = pygame.sprite.GroupSingle()
+        self.weapon = Weapon(self.constants, self.weapon_group, self.y_sorted_group)
         self.projectile_group = pygame.sprite.Group()
 
-        self.camera = Camera(self.constants, self.screen, self.level, self.player)
+        self.camera_group = pygame.sprite.GroupSingle()
+        self.camera = Camera(self.constants, self.camera_group)
 
         self.hud = HUD(self.constants, self.player, self.weapon)
         self.hud_group = pygame.sprite.GroupSingle(self.hud)  # type: ignore
@@ -80,22 +91,23 @@ class Game:
 
             self.handle_events()
 
-            self.object_group.update(dt)
+            self.dynamics_group.update(dt)
             self.player_group.update(dt, self.level)
             player_center = self.player.rect.center
-            self.weapon_group.update(dt, player_center, self.projectile_group)
+            self.weapon_group.update(
+                dt, player_center, self.projectile_group, self.y_sorted_group
+            )
             self.projectile_group.update(dt, self.level.get_obstacles())
             self.hud_group.update()
-            self.camera.update()
-
-            self.camera.draw(
+            self.camera.update(
+                self.player,
+                self.level,
                 self.background_group,
                 self.hud_group,
-                self.object_group,
-                self.player_group,
-                self.weapon_group,
-                self.projectile_group,
+                self.y_sorted_group,
             )
+
+            self.camera_group.draw(pygame.display.get_surface())
             pygame.display.flip()  # Update the display
 
         pygame.quit()

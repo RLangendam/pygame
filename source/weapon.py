@@ -4,8 +4,8 @@ from source.projectile import Projectile
 
 
 class Weapon(pygame.sprite.Sprite):
-    def __init__(self, group, constants: Constants):
-        super().__init__(group)
+    def __init__(self, constants: Constants, *groups):
+        super().__init__(*groups)
         image_dimensions = (constants.tile_size, constants.tile_size)
         self.image = pygame.Surface(image_dimensions, pygame.SRCALPHA)
         self.weapon_length = constants.tile_size
@@ -20,7 +20,7 @@ class Weapon(pygame.sprite.Sprite):
     def update_mouse_position(self, mouse_pos: tuple[int, int]):
         self.mouse_pos = mouse_pos
 
-    def update(self, dt: int, center: tuple[int, int], projectile_group):
+    def update(self, dt: int, center: tuple[int, int], *groups):
         mouse_x, mouse_y = self.mouse_pos
         center_x, center_y = center
         dx = mouse_x - center_x
@@ -51,7 +51,7 @@ class Weapon(pygame.sprite.Sprite):
         center_y += offset.y
         self.rect = self.image.get_rect(center=(center_x, center_y))
 
-        self.update_firing_projectiles(direction, dt, projectile_group)
+        self.update_firing_projectiles(direction, dt, *groups)
 
     def start_firing_projectiles(self):
         self.firing_projectiles = True
@@ -61,10 +61,10 @@ class Weapon(pygame.sprite.Sprite):
         self.firing_projectiles = False
 
     def update_firing_projectiles(
-        self, direction: pygame.math.Vector2, dt: int, projectile_group
+        self, direction: pygame.math.Vector2, dt: int, *groups
     ):
         self.last_fired += dt
         if self.firing_projectiles and self.ammo > 0 and self.last_fired > 500:
-            Projectile(self.rect.center, direction, projectile_group)
+            Projectile(self.rect.center, direction, *groups)
             self.ammo -= 1
             self.last_fired = 0

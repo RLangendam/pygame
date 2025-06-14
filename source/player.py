@@ -9,8 +9,8 @@ Y = 2
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, constants: Constants):
-        super().__init__()
+    def __init__(self, x: int, y: int, constants: Constants, *groups):
+        super().__init__(*groups)
         image_dimensions = (constants.tile_size, constants.tile_size)
         self.image = pygame.Surface(image_dimensions, pygame.SRCALPHA)
         pygame.draw.ellipse(self.image, (255, 0, 0, 255), self.image.get_rect())

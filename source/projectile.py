@@ -6,9 +6,9 @@ class Projectile(pygame.sprite.Sprite):
         self,
         start_pos: tuple[int, int],
         direction: pygame.Vector2,
-        group,
+        *groups,
     ):
-        super().__init__(group)
+        super().__init__(*groups)
         self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
         self.image.fill((255, 0, 0, 255))
         self.rect = self.image.get_rect(center=start_pos)

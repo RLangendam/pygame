@@ -79,7 +79,14 @@ xxxxxxxxxxx  xxxxxxxxx"""
 
 
 class Level:
-    def __init__(self, background_group, object_group, constants: Constants):
+    def __init__(
+        self,
+        background_group,
+        dynamics_group,
+        statics_group,
+        y_sorted_group,
+        constants: Constants,
+    ):
         characters = [list(row) for row in MAP.splitlines()]
         self.tiles = []
         self.obstacles_group = pygame.sprite.Group()
@@ -97,19 +104,25 @@ class Level:
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
                 elif char == "o":
-                    sprite = Decoration(pos, constants, object_group)
+                    sprite = Decoration(pos, constants, statics_group, y_sorted_group)
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
                 elif char == "b":
                     sprite = Obstacle(
-                        pos, constants, object_group, self.obstacles_group
+                        pos,
+                        constants,
+                        self.obstacles_group,
+                        statics_group,
+                        y_sorted_group,
                     )
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
                 elif char == "i":
-                    sprite = Item(pos, constants, object_group, self.item_group)
+                    sprite = Item(
+                        pos, constants, self.item_group, statics_group, y_sorted_group
+                    )
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
@@ -122,8 +135,6 @@ class Level:
 
         self.width = len(characters[0]) * constants.tile_size
         self.height = len(characters) * constants.tile_size
-        self.background_group = background_group
-        self.object_group = object_group
 
     def get_obstacles(self):
         return self.obstacles_group
