@@ -5,9 +5,9 @@ class HUD(pygame.sprite.Sprite):
     def __init__(self, constants, *groups):
         super().__init__(*groups)
         self.constants = constants
-        self.image = pygame.Surface((80, 50), pygame.SRCALPHA)
+        self.image = pygame.Surface((90, 60), pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=(0, 0))
-        self.font = pygame.font.Font(None, 14)
+        self.font = pygame.font.Font("assets/graphics/fonts/pixel.ttf", 10)
 
     def update(self, health: int, ammo: int, inventory: dict):
         self.image.fill((0, 0, 0, 128))  # Semi-transparent background
