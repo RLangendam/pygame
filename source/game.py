@@ -1,7 +1,6 @@
 import pygame
 from source.hud import HUD
 from source.level import Level
-from source.player import Player
 from source.constants import Constants
 from source.camera import Camera
 from source.weapon import Weapon
@@ -29,11 +28,8 @@ class Game:
             self.y_sorted_group,
             self.constants,
         )
-
-        self.player_group = pygame.sprite.GroupSingle()
-        self.player = Player(
-            50, 50, self.constants, self.player_group, self.y_sorted_group
-        )
+        self.player_group = self.level.get_player()
+        self.player = self.player_group.sprite
 
         self.weapon_group = pygame.sprite.GroupSingle()
         self.weapon = Weapon(self.constants, self.weapon_group, self.y_sorted_group)
@@ -42,8 +38,8 @@ class Game:
         self.camera_group = pygame.sprite.GroupSingle()
         self.camera = Camera(self.constants, self.camera_group)
 
-        self.hud = HUD(self.constants, self.player, self.weapon)
-        self.hud_group = pygame.sprite.GroupSingle(self.hud)  # type: ignore
+        self.hud_group = pygame.sprite.GroupSingle()
+        self.hud = HUD(self.constants, self.hud_group)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -92,7 +88,13 @@ class Game:
             self.handle_events()
 
             self.dynamics_group.update(dt)
-            self.player_group.update(dt, self.level)
+            self.player_group.update(
+                dt,
+                self.level.width,
+                self.level.height,
+                self.level.get_obstacles(),
+                self.level.get_items(),
+            )
             player_center = self.player.rect.center
             self.level.get_enemies().update(
                 dt,
@@ -105,7 +107,9 @@ class Game:
                 dt, player_center, self.projectile_group, self.y_sorted_group
             )
             self.projectile_group.update(dt, self.level.get_obstacles())
-            self.hud_group.update()
+            self.hud_group.update(
+                self.player.health, self.weapon.ammo, self.player.inventory
+            )
             self.camera.update(
                 self.player,
                 self.level,

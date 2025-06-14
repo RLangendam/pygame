@@ -1,6 +1,7 @@
 import pygame
 from source.constants import Constants
 from source.enemy import Enemy
+from source.player import Player
 
 
 class Tile(pygame.sprite.Sprite):
@@ -71,7 +72,7 @@ MAP = """xxxxxxxx  xxxxxxxxxxxx
 x                    x
 x         i          x
 x       xxxxx        x
-                  e   
+   p              e   
                       
 x    o  b  xxxxx     x
 x                    x
@@ -93,6 +94,7 @@ class Level:
         self.obstacles_group = pygame.sprite.Group()
         self.item_group = pygame.sprite.Group()
         self.enemies_group = pygame.sprite.Group()
+        self.player_group = pygame.sprite.GroupSingle()
         for y, row in enumerate(characters):
             for x, char in enumerate(row):
                 pos = pygame.Vector2(x, y)
@@ -139,6 +141,17 @@ class Level:
                     sprites.append(sprite)
                     sprite = Floor(pos, constants, background_group)
                     sprites.append(sprite)
+                elif char == "p":
+                    sprite = Player(
+                        x * constants.tile_size,
+                        y * constants.tile_size,
+                        constants,
+                        self.player_group,
+                        y_sorted_group,
+                    )
+                    sprites.append(sprite)
+                    sprite = Floor(pos, constants, background_group)
+                    sprites.append(sprite)
                 else:
                     raise ValueError(f"Unknown tile character: {char}")
 
@@ -157,3 +170,6 @@ class Level:
 
     def get_enemies(self):
         return self.enemies_group
+
+    def get_player(self):
+        return self.player_group

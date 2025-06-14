@@ -1,5 +1,4 @@
 import pygame
-from source.level import Level
 from source.constants import Constants
 from source.movable import Movable
 
@@ -15,20 +14,20 @@ class Player(Movable):
         self.movement_x = 0
         self.movement_y = 0
 
-    def update(self, dt: int, level: Level):
+    def update(self, dt: int, level_width: int, level_height: int, obstacles, items):
         dx, dy = self.deltas_from_direction(dt)
         if dx == 0 and dy == 0:
             return
 
-        dx, dy = self.restrict_to_level_bounds(dx, dy, level.width, level.height)
+        dx, dy = self.restrict_to_level_bounds(dx, dy, level_width, level_height)
         if dx == 0 and dy == 0:
             return
 
-        dx, dy = self.move_avoiding_collisions(dx, dy, level.get_obstacles())
+        dx, dy = self.move_avoiding_collisions(dx, dy, obstacles)
         if dx == 0 and dy == 0:
             return
 
-        self.pickup_items(level.get_items())
+        self.pickup_items(items)
 
     def start_moving_up(self):
         self.movement_y -= 1
