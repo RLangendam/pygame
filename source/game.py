@@ -22,11 +22,12 @@ class Game:
         self.background_group = pygame.sprite.Group()
         self.level = Level(self.background_group, self.object_group, self.constants)
 
-        self.player = Player(50, 50, self.constants, self.level)
+        self.player = Player(50, 50, self.constants)
         self.player_group = pygame.sprite.GroupSingle(self.player)  # type: ignore
 
         self.weapon_group = pygame.sprite.Group()
-        self.weapon = Weapon(self.weapon_group, self.constants, self.player)
+        self.weapon = Weapon(self.weapon_group, self.constants)
+        self.projectile_group = pygame.sprite.Group()
 
         self.camera = Camera(self.constants, self.screen, self.level, self.player)
 
@@ -80,8 +81,10 @@ class Game:
             self.handle_events()
 
             self.object_group.update(dt)
-            self.player_group.update(dt)
-            self.weapon_group.update(dt)
+            self.player_group.update(dt, self.level)
+            player_center = self.player.rect.center
+            self.weapon_group.update(dt, player_center, self.projectile_group)
+            self.projectile_group.update(dt, self.level.get_obstacles())
             self.hud_group.update()
             self.camera.update()
 
@@ -91,6 +94,7 @@ class Game:
                 self.object_group,
                 self.player_group,
                 self.weapon_group,
+                self.projectile_group,
             )
             pygame.display.flip()  # Update the display
 
